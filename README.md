@@ -1,14 +1,10 @@
 # Building an App to Notify Users of COVID-19 Exposure
 
-Convey COVID-19 diagnoses and inform people when they may have been exposed.
+Inform people when they may have been exposed to COVID-19.
 
 ## Overview
 
-This code project uses the ExposureNotification framework to build a sample app that lets people know when they have come into contact with someone who meets a set of criteria for a case of COVID-19. When using the project as a reference for designing a notification app, you can define and modify the criteria for a case of COVID-19, including the results of a clinical test or details of symptoms a person may self-report.
-
-After the user authorizes exposure notifications, their device broadcasts random identifiers and detects similar broadcasts from other participating devices. Each device encrypts its transmitted data with locally generated keys and locally stores data received from other detected devices.
-
-When a user receives a positive diagnosis, they can share *diagnosis keys* that contain no personally identifiable information. The app sends the keys to a central server, and periodically downloads diagnosis keys from the server to search the device’s private interaction data for matching interactions, notifying the user of any interactions that exceed a calculated risk threshold.
+This code project uses the ExposureNotification framework to build a sample app that lets people know when they have come into contact with someone who meets a set of criteria for a case of COVID-19. When using the project as a reference for designing a notification app, you can define the criteria for how the framework determines whether the risk is high enough to report to the user.
 
 The sample app includes code to simulate server responses. When building an exposure notification app based on this project, create a server environment to provide diagnosis keys and exposure criteria, and add code to your app to communicate with this server. If the app you build operates in a country that authenticates medical tests for COVID-19, you may need to include additional network code to communicate with those authentication services.
 
@@ -126,9 +122,11 @@ struct TestResult: Codable {
 }
 ```
 
-## Share Privacy-Protected Data with the Server
+## Share Diagnostic Keys with the Server
 
-This project implements the `Server` class to simulate a remote server with which the app communicates. There is a single `Server` object in the app that stores the received diagnosis keys and provides them on demand. The sample server does not partition the data by region. It maintains a single list of keys, and provides the entire list upon request. 
+This project simulates a remote server with which the app communicates. A user with a diagnosis for COVID-19 can upload *diagnosis keys* to the server. Each instance of the app periodically downloads diagnosis keys to search the device’s private interaction data for matching interactions.
+
+There is a single `Server` object in the app that stores the received diagnosis keys and provides them on demand. The sample server does not partition the data by region. It maintains a single list of keys, and provides the entire list upon request. 
 
 ``` swift
 // Replace this class with your own class that communicates with your server.
@@ -144,9 +142,9 @@ class Server {
 
 As with the local store, this local server stores the data in JSON format, using the same `Persisted` property wrapper.
 
-## Ask Users to Share Positive COVID-19 Indicators
+## Ask Users to Share COVID-19 Indicators
 
-A user with a positive diagnosis for COVID-19 can upload privacy-protected details about the device's recent interactions to the central server as *diagnosis keys*. The sample app shows one strategy in which a recognized medical authority has tested the user and found positive COVID-19 indicators. The sample app provides a way for users to enter an authentication code. The app doesn't submit this data to an authentication service, so all codes automatically pass. 
+The sample app shows one strategy in which a recognized medical authority has tested the user and found positive COVID-19 indicators. The sample app provides a way for users to enter an authentication code. The app doesn't submit this data to an authentication service, so all codes automatically pass. 
 
 When the user provides information about a positive test result, the app records the test result in the local store and asks the user to share it. To share the results, the app needs to get a list of diagnosis keys and send it to its server. To get the keys, it calls the singleton `ENManager` object's [`getDiagnosisKeys(completionHandler:)`][getDiagnosisKeysWithCompletionHandler] method, as shown in the code below.
 
@@ -187,12 +185,9 @@ func postDiagnosisKeys(_ diagnosisKeys: [ENTemporaryExposureKey], completion: (E
 }
 ```
 
-- Note: Even though the app stores information locally about test results, the app only reports diagnosis keys provided by the framework. This design ensures that the user's information stays private.
-
-
 ## Create a Background Task to Check for Exposure
 
-The app uses a background task to periodically check whether the user may have been exposed to COVID-19. The app's `Info.plist` file declares a background task named `com.example.apple-samplecode.ExposureNotificationSampleApp.exposure-notification`. The BackgroundTask framework detects apps that contain the Exposure Notification entitlement and a background task that ends in `exposure-notification`. The operating system automatically launches these apps when they aren't running and guarantees them more background time to ensure that the app can test and report results promptly.
+The app uses a background task to periodically check whether the user may have been exposed to an individual with COVID-19. The app's `Info.plist` file declares a background task named `com.example.apple-samplecode.ExposureNotificationSampleApp.exposure-notification`. The BackgroundTask framework detects apps that contain the Exposure Notification entitlement and a background task that ends in `exposure-notification`. The operating system automatically launches these apps when they aren't running and guarantees them more background time to ensure that the app can test and report results promptly.
 
 The app delegate schedules the background task:
 
@@ -250,7 +245,7 @@ let batchSize = session.maximumKeyCount
 
 When the framework detects that a locally saved interaction matches one of the diagnosis keys, it calculates a risk score for that interaction based on a number of different factors, such as when the interaction took place and how long the devices were in proximity to each other.
 
-To provide specific guidance to the framework about how risk should be evaluated, the app creates an [`ENExposureConfiguration`][ENExposureConfiguration] object. The server provides the criteria that the ExposureNotification framework will use to evaluate the exposure risk.
+To provide specific guidance to the framework about how risk should be evaluated, the app creates an [`ENExposureConfiguration`][ENExposureConfiguration] object. The app requests the criteria from the 'Server' object and then creates an `ENExposureConfiguration` object.
 
 ``` swift
 func getExposureConfiguration(completion: (Result<ENExposureConfiguration, Error>) -> Void) {
@@ -286,9 +281,7 @@ func getExposureConfiguration(completion: (Result<ENExposureConfiguration, Error
 }
 ```
 
-Use a similar design when implementing a server. Because the server provides the evaluation criteria, the criteria can be updated on the server as the health organization refines how best to calculate exposure risk. The client app incorporates the changes the next time it runs the background task.
-
-- Important: In the next beta revision, the framework will automatically post notifications to the user when it finds interactions that match the provided criteria. Use the exposure configuration to define all of the criteria for a match. Don't perform any additional filtering on the results, because that might filter out results for which the user already received a notification.
+- Important: Use the exposure configuration to define all the criteria for a match. Don’t perform any additional filtering on the results the framework sends you.
 
 After retrieving the `ENExposureConfiguration` object from the server, the app configures the session object and then activates it. If no errors occurred, the app calls its own `checkExposure` method to begin matching keys to interactions.
 
@@ -344,8 +337,6 @@ session.finishedDiagnosisKeys { summary, error in
 }
 ```
 
-The completion handler for this call receives a summary of the search results, which the app ignores. It calls its own method to get complete information on all of the matching interactions, as shown in the next section.
-
 ## Interpret Results
 
 The app fetches the results from the session using a throttling technique similar to the one described in the Submit Diagnosis Keys to the Framework section above. Each time through the loop, it retrieves a specified number of exposures.
@@ -373,9 +364,6 @@ func getAllExposures() {
 ```
 
 When the app receives all the results, it calls its own `finish` method to add those exposures to its own local store and to notify the user. This method also updates the search index, so that next time the background task runs, it reads just the new keys added to the server.
-
-- Important: In the next beta revision, the framework will automatically post notifications to the user when it finds any interactions that matches the provided criteria. The sample app will be updated to show the new behavior.
-
 
 [ENManager]: https://developer.apple.com/documentation/exposurenotification/enmanager
 [getDiagnosisKeysWithCompletionHandler]: https://developer.apple.com/documentation/exposurenotification/enmanager/3583725-getdiagnosiskeys
