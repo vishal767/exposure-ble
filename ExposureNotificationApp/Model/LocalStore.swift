@@ -12,7 +12,7 @@ struct Exposure: Codable {
     let date: Date
     let duration: TimeInterval
     let totalRiskScore: ENRiskScore
-    let transmissionRiskLevel: ENRiskLevel.RawValue
+    let transmissionRiskLevel: ENRiskLevel
 }
 
 struct TestResult: Codable {
@@ -64,8 +64,8 @@ class LocalStore {
     @Persisted(userDefaultsKey: "isOnboarded", notificationName: .init("LocalStoreIsOnboardedDidChange"), defaultValue: false)
     var isOnboarded: Bool
     
-    @Persisted(userDefaultsKey: "nextDiagnosisKeyIndex", notificationName: .init("LocalStoreNextDiagnosisKeyIndexDidChange"), defaultValue: 0)
-    var nextDiagnosisKeyIndex: Int
+    @Persisted(userDefaultsKey: "nextDiagnosisKeyFileIndex", notificationName: .init("LocalStoreNextDiagnosisKeyFileIndexDidChange"), defaultValue: 0)
+    var nextDiagnosisKeyFileIndex: Int
     
     @Persisted(userDefaultsKey: "exposures", notificationName: .init("LocalStoreExposuresDidChange"), defaultValue: [])
     var exposures: [Exposure]

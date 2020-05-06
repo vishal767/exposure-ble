@@ -316,3 +316,6 @@ This example flow assumes a test for the entirety of the flow, but could be conf
 
 /* Error */
 "BACKGROUND_TIMEOUT" = "Ran out of background time.";
+
+/* User notification */
+"USER_NOTIFICATION_EXPLANATION" = "{Actual copy to be provided by Public Health Authority}";

@@ -50,18 +50,17 @@ class DeveloperViewController: UITableViewController {
                 LocalStore.shared.exposureDetectionErrorLocalizedDescription = "Unable to connect to server."
                 
             case .simulateExposure:
-                let riskLevels: [ENRiskLevel] = [.invalid, .lowest, .low, .lowMedium, .medium, .mediumHigh, .high, .veryHigh, .highest]
                 let exposure = Exposure(date: Date() - TimeInterval.random(in: 1...4) * 24 * 60 * 60,
                                         duration: TimeInterval(Int.random(in: 1...5) * 60 * 5),
-                                        totalRiskScore: ENRiskScore.random(in: 1...8),
-                                        transmissionRiskLevel: riskLevels.randomElement()!.rawValue)
+                                        totalRiskScore: .random(in: 1...8),
+                                        transmissionRiskLevel: .random(in: 0...7))
                 LocalStore.shared.exposures.append(exposure)
                 
             case .simulatePositiveDiagnosis:
                 let testResult = TestResult(id: UUID(),
                                             isAdded: true,
                                             dateAdministered: Date() - TimeInterval.random(in: 0...4) * 24 * 60 * 60,
-                                            isShared: Bool.random())
+                                            isShared: .random())
                 LocalStore.shared.testResults[testResult.id] = testResult
                 
             case .disableExposureNotifications:
@@ -78,7 +77,7 @@ class DeveloperViewController: UITableViewController {
                 LocalStore.shared.exposureDetectionErrorLocalizedDescription = nil
                 
             case .resetLocalExposures:
-                LocalStore.shared.nextDiagnosisKeyIndex = 0
+                LocalStore.shared.nextDiagnosisKeyFileIndex = 0
                 LocalStore.shared.exposures = []
                 LocalStore.shared.dateLastPerformedExposureDetection = nil
                 
@@ -92,7 +91,7 @@ class DeveloperViewController: UITableViewController {
                 break // handled by segue
                 
             case .getAndPost:
-                ExposureManager.shared.getAndPostDiagnosisKeys { error in
+                ExposureManager.shared.getAndPostTestDiagnosisKeys { error in
                     if let error = error {
                         showError(error, from: self)
                     }

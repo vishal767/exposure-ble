@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,8 @@
 		465310C42444F94500B6185D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 465310C32444F94500B6185D /* Assets.xcassets */; };
 		465310C72444F94500B6185D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 465310C52444F94500B6185D /* LaunchScreen.storyboard */; };
 		46824FA5245CDC3D00E780DB /* RequirementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46824FA4245CDC3D00E780DB /* RequirementView.swift */; };
+		4688CCAF24627FFF0015A9E2 /* DeveloperDiagnosisKeyFileProtobuf.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4688CCAE24627FFF0015A9E2 /* DeveloperDiagnosisKeyFileProtobuf.pb.swift */; };
+		469E404F246257F1006166EB /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 469E404E246257F1006166EB /* SwiftProtobuf */; };
 		46B0A02C24558B3A001CB4E5 /* StepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B0A02B24558B3A001CB4E5 /* StepViewController.swift */; };
 		46B0A02E24558D5C001CB4E5 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B0A02D24558D5C001CB4E5 /* OnboardingViewController.swift */; };
 		46B0C672245EA51800D15BE1 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B0C671245EA51800D15BE1 /* TableHeaderView.swift */; };
@@ -51,9 +53,11 @@
 		465310C62444F94500B6185D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		465310C82444F94500B6185D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		46824FA4245CDC3D00E780DB /* RequirementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequirementView.swift; sourceTree = "<group>"; };
+		4688CCAE24627FFF0015A9E2 /* DeveloperDiagnosisKeyFileProtobuf.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeveloperDiagnosisKeyFileProtobuf.pb.swift; sourceTree = "<group>"; };
 		46B0A02B24558B3A001CB4E5 /* StepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepViewController.swift; sourceTree = "<group>"; };
 		46B0A02D24558D5C001CB4E5 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		46B0C671245EA51800D15BE1 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
+		46B451C42462A79B009733F4 /* DeveloperDiagnosisKeyFileProtobuf.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.protobuf; path = DeveloperDiagnosisKeyFileProtobuf.proto; sourceTree = "<group>"; };
 		46C7415B245A636500E5C53A /* ExposureDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExposureDetailsViewController.swift; sourceTree = "<group>"; };
 		46C7415E245A64B600E5C53A /* SeparatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		46C74161245A65C100E5C53A /* ExposureDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExposureDetailsView.xib; sourceTree = "<group>"; };
@@ -70,6 +74,7 @@
 		46E5D00B24500AC6000347EB /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		46E5D00F2450113A000347EB /* VerticalScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalScrollView.swift; sourceTree = "<group>"; };
 		46E5D01424502C59000347EB /* ExposureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExposureManager.swift; sourceTree = "<group>"; };
+		590C2B5EB9CD76E6652F3382 /* ACKNOWLEDGEMENTS.txt */ = {isa = PBXFileReference; includeInIndex = 1; path = ACKNOWLEDGEMENTS.txt; sourceTree = "<group>"; };
 		5F91F0A72457E82500F8F0BA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		709910278AB0B2315C855636 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE.txt; sourceTree = "<group>"; };
 		B23DB6207F0A967251FAC396 /* SampleCode.xcconfig */ = {isa = PBXFileReference; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
@@ -80,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				469E404F246257F1006166EB /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +106,7 @@
 				5F91F0A72457E82500F8F0BA /* README.md */,
 				465310B92444F94400B6185D /* ExposureNotificationApp */,
 				465310B82444F94400B6185D /* Products */,
+				469E404D246257F1006166EB /* Frameworks */,
 				19564B90E96B60306FE4D447 /* Configuration */,
 				CC2CE86C3A5C34704E509518 /* LICENSE */,
 			);
@@ -133,11 +140,20 @@
 			path = ExposureNotificationApp;
 			sourceTree = "<group>";
 		};
+		469E404D246257F1006166EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		46C7415D245A645D00E5C53A /* Developer */ = {
 			isa = PBXGroup;
 			children = (
 				465310BE2444F94400B6185D /* DeveloperViewController.swift */,
 				4629339C2456979900C7BF17 /* DeveloperDiagnosisKeysViewController.swift */,
+				4688CCAE24627FFF0015A9E2 /* DeveloperDiagnosisKeyFileProtobuf.pb.swift */,
+				46B451C42462A79B009733F4 /* DeveloperDiagnosisKeyFileProtobuf.proto */,
 			);
 			path = Developer;
 			sourceTree = "<group>";
@@ -186,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				709910278AB0B2315C855636 /* LICENSE.txt */,
+				590C2B5EB9CD76E6652F3382 /* ACKNOWLEDGEMENTS.txt */,
 			);
 			name = LICENSE;
 			path = LICENSE;
@@ -207,6 +224,9 @@
 			dependencies = (
 			);
 			name = ExposureNotificationApp;
+			packageProductDependencies = (
+				469E404E246257F1006166EB /* SwiftProtobuf */,
+			);
 			productName = BubbleSampleApp;
 			productReference = 465310B72444F94400B6185D /* ExposureNotificationApp.app */;
 			productType = "com.apple.product-type.application";
@@ -236,6 +256,9 @@
 				Base,
 			);
 			mainGroup = 465310AE2444F94400B6185D;
+			packageReferences = (
+				4679D0E42462289B00A8F019 /* XCRemoteSwiftPackageReference "swift-protobuf" */,
+			);
 			productRefGroup = 465310B82444F94400B6185D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -283,6 +306,7 @@
 				46824FA5245CDC3D00E780DB /* RequirementView.swift in Sources */,
 				4629339D2456979900C7BF17 /* DeveloperDiagnosisKeysViewController.swift in Sources */,
 				465310BD2444F94400B6185D /* SceneDelegate.swift in Sources */,
+				4688CCAF24627FFF0015A9E2 /* DeveloperDiagnosisKeyFileProtobuf.pb.swift in Sources */,
 				46B0C672245EA51800D15BE1 /* TableHeaderView.swift in Sources */,
 				46D1680A2449114700120FCB /* Utilities.swift in Sources */,
 				46E515B82455048900A8B68E /* NotifyOthersViewController.swift in Sources */,
@@ -439,14 +463,14 @@
 				CODE_SIGN_ENTITLEMENTS = ExposureNotificationApp/ExposureNotificationApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ExposureNotificationApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.ExposureNotificationSampleApp${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -466,14 +490,14 @@
 				CODE_SIGN_ENTITLEMENTS = ExposureNotificationApp/ExposureNotificationApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ExposureNotificationApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.ExposureNotificationSampleApp${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -505,6 +529,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4679D0E42462289B00A8F019 /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-protobuf/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		469E404E246257F1006166EB /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4679D0E42462289B00A8F019 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 465310AF2444F94400B6185D /* Project object */;
 }

@@ -10,20 +10,21 @@ import ExposureNotification
 
 struct CodableDiagnosisKey: Codable, Equatable {
     let keyData: Data
+    let rollingPeriod: ENIntervalNumber
     let rollingStartNumber: ENIntervalNumber
-    let transmissionRiskLevel: ENRiskLevel.RawValue
+    let transmissionRiskLevel: ENRiskLevel
 }
 
 struct CodableExposureConfiguration: Codable {
     let minimumRiskScore: ENRiskScore
+    let attenuationLevelValues: [ENRiskLevelValue]
     let attenuationWeight: Double
-    let attenuationScores: [ENRiskScore]
+    let daysSinceLastExposureLevelValues: [ENRiskLevelValue]
     let daysSinceLastExposureWeight: Double
-    let daysSinceLastExposureScores: [ENRiskScore]
+    let durationLevelValues: [ENRiskLevelValue]
     let durationWeight: Double
-    let durationScores: [ENRiskScore]
+    let transmissionRiskLevelValues: [ENRiskLevelValue]
     let transmissionRiskWeight: Double
-    let transmissionRiskScores: [ENRiskScore]
 }
 
 // Replace this class with your own class that communicates with your server.
@@ -40,8 +41,9 @@ class Server {
         // Convert keys to something that can be encoded to JSON and upload them.
         let codableDiagnosisKeys = diagnosisKeys.compactMap { diagnosisKey -> CodableDiagnosisKey? in
             return CodableDiagnosisKey(keyData: diagnosisKey.keyData,
+                                       rollingPeriod: diagnosisKey.rollingPeriod,
                                        rollingStartNumber: diagnosisKey.rollingStartNumber,
-                                       transmissionRiskLevel: diagnosisKey.transmissionRiskLevel.rawValue)
+                                       transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
         }
         
         // In a real implementation, these keys would be uploaded with URLSession instead of being saved here.
@@ -51,46 +53,71 @@ class Server {
         }
         completion(nil)
     }
-    func getDiagnosisKeys(index: Int, maximumCount: Int, completion: (Result<(diagnosisKeys: [ENTemporaryExposureKey], done: Bool), Error>) -> Void) {
+    func getDiagnosisKeyFileURLs(startingAt index: Int, completion: (Result<[URL], Error>) -> Void) {
         
-        // In a real implementation, these keys would be retrieved from a server with URLSession
-        let end = min(index + maximumCount, self.diagnosisKeys.count)
-        let diagnosisKeys = self.diagnosisKeys[index..<end].map { codableDiagnosisKey -> ENTemporaryExposureKey in
-            let diagnosisKey = ENTemporaryExposureKey()
-            diagnosisKey.keyData = codableDiagnosisKey.keyData
-            diagnosisKey.rollingStartNumber = codableDiagnosisKey.rollingStartNumber
-            diagnosisKey.transmissionRiskLevel = ENRiskLevel(rawValue: codableDiagnosisKey.transmissionRiskLevel)!
-            return diagnosisKey
-        }
-        completion(.success((diagnosisKeys, end == self.diagnosisKeys.count)))
+        // In a real implementation, these URLs would be retrieved from a server with URLSession
+        // This sample only returns one placeholder URL, because the diagnosis key file is generated in each call to downloadDiagnosisKeyFile
+        let remoteURLs = [URL(string: "/url/to/file/")!]
+        
+        completion(.success(Array(remoteURLs[min(index, remoteURLs.count)...])))
     }
-
+    
+    // The URL passed to the completion is the local URL of the downloaded diagnosis key file
+    func downloadDiagnosisKeyFile(at remoteURL: URL, completion: (Result<URL, Error>) -> Void) {
+        
+        // In a real implementation, the file at remoteURL would be downloaded from a server
+        // This sample ignores the remote URL and just generates and saves a file based on the locally stored diagnosis keys
+        let file = File.with { file in
+            file.key = diagnosisKeys.map { diagnosisKey in
+                Key.with { key in
+                    key.keyData = diagnosisKey.keyData
+                    key.rollingPeriod = diagnosisKey.rollingPeriod
+                    key.rollingStartNumber = diagnosisKey.rollingStartNumber
+                    key.transmissionRiskLevel = Int32(diagnosisKey.transmissionRiskLevel)
+                }
+            }
+        }
+        
+        do {
+            let data = try file.serializedData()
+            let localURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("diagnosisKeys")
+            try data.write(to: localURL)
+            completion(.success(localURL))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    func deleteDiagnosisKeyFile(at localURL: URL) throws {
+        try FileManager.default.removeItem(at: localURL)
+    }
+    
     func getExposureConfiguration(completion: (Result<ENExposureConfiguration, Error>) -> Void) {
         
         let dataFromServer = """
         {"minimumRiskScore":0,
+        "attenuationLevelValues":[1, 2, 3, 4, 5, 6, 7, 8],
         "attenuationWeight":50,
-        "attenuationScores":[1, 2, 3, 4, 5, 6, 7, 8],
+        "daysSinceLastExposureLevelValues":[1, 2, 3, 4, 5, 6, 7, 8],
         "daysSinceLastExposureWeight":50,
-        "daysSinceLastExposureScores":[1, 2, 3, 4, 5, 6, 7, 8],
+        "durationLevelValues":[1, 2, 3, 4, 5, 6, 7, 8],
         "durationWeight":50,
-        "durationScores":[1, 2, 3, 4, 5, 6, 7, 8],
-        "transmissionRiskWeight":50,
-        "transmissionRiskScores":[1, 2, 3, 4, 5, 6, 7, 8]}
+        "transmissionRiskLevelValues":[1, 2, 3, 4, 5, 6, 7, 8],
+        "transmissionRiskWeight":50}
         """.data(using: .utf8)!
         
         do {
             let codableExposureConfiguration = try JSONDecoder().decode(CodableExposureConfiguration.self, from: dataFromServer)
             let exposureConfiguration = ENExposureConfiguration()
             exposureConfiguration.minimumRiskScore = codableExposureConfiguration.minimumRiskScore
+            exposureConfiguration.attenuationLevelValues = codableExposureConfiguration.attenuationLevelValues as [NSNumber]
             exposureConfiguration.attenuationWeight = codableExposureConfiguration.attenuationWeight
-            exposureConfiguration.attenuationScores = codableExposureConfiguration.attenuationScores as [NSNumber]
+            exposureConfiguration.daysSinceLastExposureLevelValues = codableExposureConfiguration.daysSinceLastExposureLevelValues as [NSNumber]
             exposureConfiguration.daysSinceLastExposureWeight = codableExposureConfiguration.daysSinceLastExposureWeight
-            exposureConfiguration.daysSinceLastExposureScores = codableExposureConfiguration.daysSinceLastExposureScores as [NSNumber]
+            exposureConfiguration.durationLevelValues = codableExposureConfiguration.durationLevelValues as [NSNumber]
             exposureConfiguration.durationWeight = codableExposureConfiguration.durationWeight
-            exposureConfiguration.durationScores = codableExposureConfiguration.durationScores as [NSNumber]
+            exposureConfiguration.transmissionRiskLevelValues = codableExposureConfiguration.transmissionRiskLevelValues as [NSNumber]
             exposureConfiguration.transmissionRiskWeight = codableExposureConfiguration.transmissionRiskWeight
-            exposureConfiguration.transmissionRiskScores = codableExposureConfiguration.transmissionRiskScores as [NSNumber]
             completion(.success(exposureConfiguration))
         } catch {
             completion(.failure(error))
